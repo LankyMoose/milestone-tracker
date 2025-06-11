@@ -19,6 +19,7 @@ export type Milestone = {
   name: string
   time: Omit<Time, "hundredths">
   personalBest: Time | null
+  note: string
 }
 
 export const MILESTONES_STORAGE_KEY = "milestones"
@@ -42,6 +43,7 @@ export const createMilestone = () => {
     name: "",
     time: { hours: 0, minutes: 0, seconds: 0 },
     personalBest: null,
+    note: "",
   }
   milestones.value.push(newMilestone)
   milestones.notify()

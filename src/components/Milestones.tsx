@@ -1,4 +1,5 @@
-import { ElementProps, For, signal } from "kaioken"
+import { ElementProps, For, signal, useEffect, useRef } from "kaioken"
+import { useTextareaAutoSize } from "@kaioken-core/hooks"
 import {
   createMilestone,
   currentMilestone,
@@ -46,12 +47,16 @@ const clearPBs = () => {
 
 export function Milestones() {
   const current = currentMilestone.value
+  const currentMilestoneTextAreaRef = useRef<HTMLTextAreaElement>(null)
+  const { update } = useTextareaAutoSize(currentMilestoneTextAreaRef)
+  useEffect(() => update(), [currentMilestoneTextAreaRef, update])
+
   return (
     <div className="flex flex-col gap-4 justify-center items-center p-4 bg-white/5 rounded">
       <h1 className="text-2xl font-bold">Milestones</h1>
       {isActive.value ? (
         <>
-          <div className="flex flex-col gap-2 bg-black/50 p-1 rounded text-neutral-300">
+          <div className="flex flex-col gap-1 bg-black/50 p-1 rounded text-neutral-300">
             <div className="flex items-center gap-2 bg-white/5 py-1 px-4 rounded">
               <div className="font-bold">{current.name}</div>
               <div className="font-mono px-2">
@@ -96,6 +101,14 @@ export function Milestones() {
                 Complete
               </Button>
             </div>
+            <textarea
+              ref={currentMilestoneTextAreaRef}
+              value={current.note}
+              readOnly
+              tabIndex={-1}
+              disabled
+              className="resize-none p-2 bg-black/50 rounded font-mono"
+            />
           </div>
         </>
       ) : (
@@ -118,6 +131,7 @@ export function Milestones() {
                     <th>Minutes</th>
                     <th>Seconds</th>
                     <th>PB</th>
+                    <th>Notes</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -172,6 +186,9 @@ export function Milestones() {
 
 function MilestoneEditor({ milestone }: { milestone: Milestone }) {
   const tempItem = tempState.value.find((m) => m.id === milestone.id)!
+  const noteTextAreaRef = useRef<HTMLTextAreaElement>(null)
+
+  useTextareaAutoSize(noteTextAreaRef)
 
   return (
     <>
@@ -211,6 +228,16 @@ function MilestoneEditor({ milestone }: { milestone: Milestone }) {
       </td>
       <td>
         <SimpleTimeDisplay time={tempItem.personalBest} />
+      </td>
+      <td>
+        <div className="p-2">
+          <textarea
+            ref={noteTextAreaRef}
+            className="px-2 py-1 bg-black/40"
+            value={tempItem.note}
+            oninput={(e) => (tempItem.note = e.target.value)}
+          />
+        </div>
       </td>
       <td>
         <Button
