@@ -25,3 +25,22 @@
   color-scheme: dark;
   min-height: 100vh;
 }
+
+table td {
+  padding: 0.125rem 0.25rem;
+
+}
+
+table td :not(button) {
+  color: #aaa;
+}
+
+table thead {
+  background: rgba(255, 255, 255, 0.05)
+}
+
+table th {
+  padding: 0.125rem 0.25rem;
+  font-weight: bold;
+  text-align: left;
+}
