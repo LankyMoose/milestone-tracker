@@ -13,9 +13,9 @@
     "windows": [
       {
         "title": "Stopwatch",
-        "width": 280,
-        "height": 180,
-        "resizable": false,
+        "width": 480,
+        "height": 480,
+        "resizable": true,
         "fullscreen": false
       }
     ],

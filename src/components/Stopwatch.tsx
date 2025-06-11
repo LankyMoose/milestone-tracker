@@ -1,19 +1,16 @@
-import { ElementProps, memo, Derive, useRef, useSignal } from "kaioken"
-
-function formatTime(ms: number) {
-  const totalSeconds = Math.floor(ms / 1000)
-  const hours = Math.floor(totalSeconds / 3600)
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = totalSeconds % 60
-  const hundredths = Math.floor((ms % 1000) / 10)
-
-  return { hours, minutes, seconds, hundredths }
-}
+import { Derive, useRef } from "kaioken"
+import {
+  currentTime,
+  interval,
+  isInactive,
+  isRunning,
+  notRunning,
+} from "../state"
+import { Button } from "./Button"
+import { formatTime } from "../utils"
 
 export function Stopwatch() {
   const offset = useRef(0) // Last reference time
-  const interval = useSignal(-1) // Interval ID or -1 if stopped
-  const time = useSignal(0) // Accumulated time in ms
 
   const start = () => {
     if (interval.value === -1) {
@@ -22,7 +19,7 @@ export function Stopwatch() {
         const now = performance.now()
         const delta = now - offset.current
         offset.current = now
-        time.value += delta
+        currentTime.value += delta
       }, 1000 / 60)
     }
   }
@@ -36,13 +33,13 @@ export function Stopwatch() {
 
   const reset = () => {
     pause()
-    time.value = 0
+    currentTime.value = 0
   }
 
   return (
-    <div className="grow flex flex-col gap-8 justify-center items-center">
+    <div className="flex flex-col gap-4 justify-center items-center p-4 bg-white/5 rounded">
       <span className="font-bold select-none font-mono">
-        <Derive from={time}>
+        <Derive from={currentTime}>
           {(time) => {
             const { hours, minutes, seconds, hundredths } = formatTime(time)
             return (
@@ -61,37 +58,16 @@ export function Stopwatch() {
         </Derive>
       </span>
       <div className="flex gap-4 justify-center items-center">
-        <Derive from={[interval, time]}>
-          {(interval, time) => (
-            <>
-              <Button disabled={interval !== -1} onclick={start}>
-                Start
-              </Button>
-              <Button disabled={interval === -1} onclick={pause}>
-                Pause
-              </Button>
-              <Button disabled={time === 0} onclick={reset}>
-                Reset
-              </Button>
-            </>
-          )}
-        </Derive>
+        <Button disabled={isRunning} onclick={start}>
+          Start
+        </Button>
+        <Button disabled={notRunning} onclick={pause}>
+          Pause
+        </Button>
+        <Button disabled={isInactive} onclick={reset}>
+          Reset
+        </Button>
       </div>
     </div>
   )
 }
-
-const Button = memo(function Button(props: ElementProps<"button">) {
-  return (
-    <button
-      {...props}
-      className={[
-        "bg-red-800 cursor-pointer px-2 py-1 border border-white/15 rounded",
-        "disabled:pointer-events-none disabled:opacity-50",
-        "hover:bg-red-900 hover:border-white/5 active:opacity-75",
-      ].join(" ")}
-    >
-      {props.children}
-    </button>
-  )
-})
