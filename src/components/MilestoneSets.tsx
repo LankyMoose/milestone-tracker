@@ -19,15 +19,15 @@ export function MilestoneSets() {
   return (
     <div className="flex flex-col gap-4 p-4 max-h-screen">
       <div className="flex gap-4 justify-between items-center">
-        <h1 className="text-2xl font-bold">Milestone Sets</h1>
+        <h1 className="text-2xl font-bold">Milestone Tracker</h1>
         <Row gap="gap-4">
           <IconButton onclick={() => createMilestoneSet()}>
             <CreateIcon width="1rem" />
-            Create
+            Create New Set
           </IconButton>
           <IconButton onclick={() => jsonUtils.importSet()}>
             <ImportIcon width="1rem" />
-            Import
+            Import Set
           </IconButton>
         </Row>
       </div>

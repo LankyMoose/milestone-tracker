@@ -1,6 +1,8 @@
 import { computed, signal, watch } from "kaioken"
 import { formatTime } from "./utils"
 
+const VERSION = 0.1
+
 export const currentTime = signal(0) // Accumulated time in ms
 export const isActive = computed(() => currentTime.value > 0)
 export const isInactive = computed(() => currentTime.value === 0)
@@ -24,6 +26,7 @@ export type Milestone = {
 }
 
 export type MilestoneSet = {
+  version: number
   name: string
   milestones: Milestone[]
 }
@@ -79,6 +82,7 @@ export const createMilestoneSet = () => {
   milestoneData.value = {
     ...sets,
     [id]: {
+      version: VERSION,
       name: "New Set",
       milestones: [],
     },
@@ -107,7 +111,33 @@ export const jsonUtils = {
         const reader = new FileReader()
         reader.readAsText(file)
         reader.onload = () => {
-          const parsed = JSON.parse(reader.result as string)
+          let parsed: MilestoneSet
+          try {
+            parsed = JSON.parse(reader.result as string)
+            if (
+              !parsed.version ||
+              typeof parsed.version !== "number" ||
+              parsed.version < 0 ||
+              parsed.version > VERSION
+            ) {
+              throw "Incompatible file data"
+            }
+
+            // migrate
+            // let currentVersion = parsed.version
+            // let maxIters = 1_000
+            // let i = 0
+            // while (currentVersion < VERSION && ++i < maxIters) {
+            //   switch (currentVersion) {
+            //     case 0.1:
+            //       break
+            //   }
+            // }
+          } catch (error) {
+            alert(error)
+            return
+          }
+
           milestoneData.value = {
             ...milestoneData.value,
             [crypto.randomUUID()]: parsed,

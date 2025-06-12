@@ -25,6 +25,7 @@ import { CreateIcon } from "./icons/CreateIcon"
 
 export function MilestoneSetEditor() {
   const tempState = useSignal<MilestoneSet>({
+    version: 0,
     name: "",
     milestones: [],
   })
@@ -92,6 +93,7 @@ export function MilestoneSetEditor() {
       onTransitionEnd={(s) =>
         s === "exited" &&
         (tempState.value = {
+          version: 0,
           name: "",
           milestones: [],
         })
