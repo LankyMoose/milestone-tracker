@@ -1,4 +1,4 @@
-import { For, useComputed } from "kaioken"
+import { Derive, For, useComputed } from "kaioken"
 import {
   createMilestoneSet,
   jsonUtils,
@@ -32,7 +32,16 @@ export function MilestoneSets() {
         </Row>
       </div>
       <div className="flex flex-col p-2 bg-white/5 rounded overflow-y-auto">
-        <ul className="flex flex-col gap-1 bg-black/25 p-1 text-xs rounded-md">
+        <ul className="flex flex-col gap-1 bg-black/25 p-1 rounded-md">
+          <Derive from={sets}>
+            {({ length }) =>
+              length === 0 && (
+                <i className="text-neutral-500 p-2 text-center">
+                  No sets exist
+                </i>
+              )
+            }
+          </Derive>
           <For each={sets}>
             {([id, set]) => (
               <li className="w-full text-left rounded p-4 flex items-center gap-2 justify-between bg-white/5">

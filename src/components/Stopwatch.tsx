@@ -64,13 +64,13 @@ export function Stopwatch() {
       </span>
       <div className="flex gap-4 justify-center items-center">
         <IconButton disabled={isRunning} onclick={start}>
-          <PlayIcon />
+          <PlayIcon width="2rem" height="2rem" />
         </IconButton>
         <IconButton disabled={notRunning} onclick={pause}>
-          <PauseIcon />
+          <PauseIcon width="2rem" height="2rem" />
         </IconButton>
         <IconButton disabled={isInactive} onclick={reset}>
-          <UndoIcon />
+          <UndoIcon width="2rem" height="2rem" />
         </IconButton>
       </div>
     </div>

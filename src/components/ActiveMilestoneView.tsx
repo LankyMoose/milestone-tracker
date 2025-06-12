@@ -1,7 +1,8 @@
-import { Transition, useRef, useSignal, useWatch } from "kaioken"
+import { Transition, useSignal, useWatch } from "kaioken"
 import {
   currentMilestoneIndex,
   handleMilestoneCompleted,
+  isActive,
   isInactive,
   Milestone,
   milestoneData,
@@ -14,7 +15,6 @@ import { Stopwatch } from "./Stopwatch"
 import { Col, Row } from "./Containers"
 
 export function ActiveMilestoneSetView() {
-  const textAreaRef = useRef<HTMLTextAreaElement>(null)
   const tempState = useSignal<Milestone | null>(null)
   useWatch(() => {
     const setId = selectedMilestoneSetId.value,
@@ -33,63 +33,59 @@ export function ActiveMilestoneSetView() {
         return (
           <Modal
             state={state}
-            close={() => (selectedMilestoneSetId.value = null)}
+            close={() => {
+              if (isActive.value) return
+              selectedMilestoneSetId.value = null
+            }}
           >
-            <Stopwatch />
-            <div className="flex flex-col gap-1 bg-black/50 p-1 rounded text-neutral-300">
-              <div className="flex items-center gap-2 bg-white/5 py-1 px-4 rounded">
-                <Col grow>
-                  <Row className="justify-between">
-                    <div className="font-bold">{tempState.value?.name}</div>
-                    <Button
-                      disabled={isInactive}
-                      onclick={() =>
-                        tempState.value &&
-                        handleMilestoneCompleted(tempState.value)
-                      }
-                    >
-                      Complete
-                    </Button>
-                  </Row>
-                  <Col>
+            <Col>
+              <Stopwatch />
+              <Col className="bg-black/30 p-2 rounded">
+                <h2 className="font-mono font-bold">Current Milestone</h2>
+                <div className="flex items-center gap-2 bg-white/5  p-2 rounded">
+                  <Col grow>
                     <Row className="justify-between">
-                      <Row>
-                        <span className="grow">PB: </span>
-                        <TimeDisplaySpan
-                          time={
-                            tempState.value?.personalBest ?? {
-                              hours: 0,
-                              minutes: 0,
-                              seconds: 0,
-                            }
-                          }
-                        />
-                      </Row>
-                      <Row>
-                        <span className="grow">Target: </span>
-                        <TimeDisplaySpan
-                          time={
-                            tempState.value?.time ?? {
-                              hours: 0,
-                              minutes: 0,
-                              seconds: 0,
-                            }
-                          }
-                        />
-                      </Row>
+                      <div className="font-bold">{tempState.value?.name}</div>
+                      <Button
+                        disabled={isInactive}
+                        onclick={() =>
+                          tempState.value &&
+                          handleMilestoneCompleted(tempState.value)
+                        }
+                      >
+                        Complete
+                      </Button>
                     </Row>
+                    <Col>
+                      <Row className="justify-between">
+                        <Row>
+                          <span className="grow">PB: </span>
+                          <TimeDisplaySpan
+                            time={tempState.value?.personalBest ?? null}
+                          />
+                        </Row>
+                        <Row>
+                          <span className="grow">Target: </span>
+                          <TimeDisplaySpan
+                            time={
+                              tempState.value?.time ?? {
+                                hours: 0,
+                                minutes: 0,
+                                seconds: 0,
+                              }
+                            }
+                          />
+                        </Row>
+                      </Row>
+                    </Col>
                   </Col>
-                </Col>
-              </div>
-              <textarea
-                ref={textAreaRef}
-                value={tempState.value?.note}
-                readOnly
-                tabIndex={-1}
-                disabled
-                className="resize-none p-2 bg-black/50 rounded font-mono"
-              />
-            </div>
+                </div>
+                <h2 className="font-mono font-bold">Notes</h2>
+                <pre className="p-2 bg-white/5 w-full rounded text-sm text-neutral-300">
+                  <code>{tempState.value?.note || <i>No Notes</i>}</code>
+                </pre>
+              </Col>
+            </Col>
           </Modal>
         )
       }}

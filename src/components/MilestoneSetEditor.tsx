@@ -21,7 +21,6 @@ import { TimeDisplaySpan } from "./TimeDisplaySpan"
 import { Row, Col } from "./Containers"
 
 export function MilestoneSetEditor() {
-  const setId = milestoneSetEditing.value
   const tempState = useSignal<MilestoneSet>({
     name: "",
     milestones: [],
@@ -86,7 +85,7 @@ export function MilestoneSetEditor() {
 
   return (
     <Transition
-      in={setId !== null}
+      in={milestoneSetEditing.value !== null}
       onTransitionEnd={(s) =>
         s === "exited" &&
         (tempState.value = {
@@ -98,13 +97,12 @@ export function MilestoneSetEditor() {
         return (
           <Drawer
             close={() => {
-              milestoneSetEditing.value = null
-              if (!setId) return
-
+              if (milestoneSetEditing.value === null) return
               milestoneData.value = {
                 ...milestoneData.value,
-                [setId]: tempState.value,
+                [milestoneSetEditing.value]: tempState.value,
               }
+              milestoneSetEditing.value = null
             }}
             state={state}
           >
