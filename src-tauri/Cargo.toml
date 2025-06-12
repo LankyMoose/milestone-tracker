@@ -1,5 +1,5 @@
 [package]
-name = "Milestone Tracker"
+name = "milestonetracker"
 version = "0.1.0"
 description = "Create sets of timed milestones and compete against your best times."
 authors = ["LankyMoose"]
