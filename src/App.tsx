@@ -5,7 +5,7 @@ import { ActiveMilestoneSetView } from "./components/ActiveMilestoneView"
 
 export function App() {
   return (
-    <div className="min-h-screen flex flex-col gap-8 items-center justify-center p-4">
+    <div className="p-4">
       <MilestoneSets />
       <Portal container={document.getElementById("portal-root")!}>
         <ActiveMilestoneSetView />

@@ -6,12 +6,12 @@ import {
   milestoneSetEditing,
 } from "../state"
 import { DialogHeader } from "./dialog/DialogHeader"
-import { DialogBody } from "./dialog/DialogBody"
 import { DialogFooter } from "./dialog/DialogFooter"
 import { Drawer } from "./dialog/Drawer"
 import { useTextareaAutoSize } from "@kaioken-core/hooks"
 import { Button } from "./Button"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
+import { Row, Col } from "./Containers"
 
 export function MilestoneSetEditor() {
   const setId = milestoneSetEditing.value
@@ -121,38 +121,16 @@ export function MilestoneSetEditor() {
                 Delete
               </Button>
             </DialogHeader>
-            <DialogBody>
-              <table
-                style={{
-                  width: "100%",
-                  borderCollapse: "separate",
-                }}
-                className="gap-1 p-1 bg-black/50 rounded text-neutral-300"
-              >
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Hours</th>
-                    <th>Minutes</th>
-                    <th>Seconds</th>
-                    <th>PB</th>
-                    <th>Notes</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tempState.value.milestones.map((milestone) => (
-                    <tr key={milestone.id} className="even:bg-white/5">
-                      <MilestoneEditor
-                        milestone={milestone}
-                        resetPB={() => resetMilestonePersonalBest(milestone.id)}
-                        delete={() => deleteMilestone(milestone.id)}
-                      />
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </DialogBody>
+            <div className="flex flex-col gap-1 p-1 bg-black/30 rounded-md">
+              {tempState.value.milestones.map((milestone) => (
+                <MilestoneEditor
+                  key={milestone.id}
+                  milestone={milestone}
+                  resetPB={() => resetMilestonePersonalBest(milestone.id)}
+                  delete={() => deleteMilestone(milestone.id)}
+                />
+              ))}
+            </div>
             <DialogFooter>
               <div className="flex gap-2 justify-between w-full">
                 <div>
@@ -187,61 +165,64 @@ function MilestoneEditor({
   useTextareaAutoSize(noteTextAreaRef)
 
   return (
-    <>
-      <td>
+    <Row className="items-start bg-white/5 rounded p-3">
+      <Col grow>
         <input
           type="text"
+          placeholder={"Milestone Name"}
           value={milestone.name}
           oninput={(e) => (milestone.name = e.target.value)}
           className={"bg-black/30 px-2 grow"}
         />
-      </td>
-      <td>
-        <NumberInput
-          value={milestone.time.hours}
-          oninput={(e) => (milestone.time.hours = Number(e.target.value))}
-          min={0}
-          max={23}
-        />
-      </td>
-      <td>
-        <NumberInput
-          id={`${milestone.id}_minutes`}
-          value={milestone.time.minutes}
-          oninput={(e) => (milestone.time.minutes = Number(e.target.value))}
-          min={0}
-          max={59}
-        />
-      </td>
-      <td>
-        <NumberInput
-          id={`${milestone.id}_seconds`}
-          value={milestone.time.seconds}
-          oninput={(e) => (milestone.time.seconds = Number(e.target.value))}
-          min={0}
-          max={59}
-        />
-      </td>
-      <td>
-        <TimeDisplaySpan time={milestone.personalBest} />
-      </td>
-      <td>
-        <div className="p-2">
+        <Row wrap>
+          <Row>
+            H:
+            <NumberInput
+              value={milestone.time.hours}
+              oninput={(e) => (milestone.time.hours = Number(e.target.value))}
+              min={0}
+              max={23}
+            />
+            M:
+            <NumberInput
+              id={`${milestone.id}_minutes`}
+              value={milestone.time.minutes}
+              oninput={(e) => (milestone.time.minutes = Number(e.target.value))}
+              min={0}
+              max={59}
+            />
+            S:
+            <NumberInput
+              id={`${milestone.id}_seconds`}
+              value={milestone.time.seconds}
+              oninput={(e) => (milestone.time.seconds = Number(e.target.value))}
+              min={0}
+              max={59}
+            />
+          </Row>
+          <Row>
+            PB:
+            <TimeDisplaySpan time={milestone.personalBest} />
+          </Row>
+        </Row>
+        <Row>
           <textarea
             ref={noteTextAreaRef}
-            className="px-2 py-1 bg-black/40 text-xs"
+            placeholder={"Notes"}
+            className="px-2 py-1 bg-black/40 text-xs w-full resize-none"
             value={milestone.note}
             oninput={(e) => (milestone.note = e.target.value)}
           />
-        </div>
-      </td>
-      <td>
+        </Row>
+      </Col>
+
+      <Col className="text-xs">
         <Button onclick={_delete}>Delete</Button>
         <Button onclick={resetPB} disabled={milestone.personalBest === null}>
           Reset PB
         </Button>
-      </td>
-    </>
+      </Col>
+    </Row>
   )
 }
 

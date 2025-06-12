@@ -23,24 +23,24 @@ export function MilestoneSets() {
           +
         </Button>
       </div>
-      <ul className="flex flex-col gap-2 bg-black/15 p-2 text-xs">
+      <ul className="flex flex-col gap-1 bg-black/25 p-1 text-xs rounded-md">
         <For each={sets}>
           {([id, set]) => (
-            <li className="w-full text-left rounded p-4 flex items-center gap-2 justify-between">
+            <li className="w-full text-left rounded p-4 flex items-center gap-2 justify-between bg-white/5">
               <div className="font-bold">{set.name}</div>
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <button
                   className="cursor-pointer opacity-75 hover:opacity-100"
                   onclick={() => (milestoneSetEditing.value = id)}
                 >
-                  <EditIcon width="1rem" />
+                  <EditIcon />
                 </button>
 
                 <button
                   className="cursor-pointer opacity-75 hover:opacity-100"
                   onclick={() => (selectedMilestoneSetId.value = id)}
                 >
-                  <PlayIcon width="1rem" />
+                  <PlayIcon />
                 </button>
               </div>
             </li>

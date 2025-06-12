@@ -5,9 +5,9 @@ export const Button = memo(function Button(props: ElementProps<"button">) {
     <button
       {...props}
       className={[
-        "bg-red-800 cursor-pointer px-2 py-1 border border-white/15 rounded",
+        "bg-purple-950 cursor-pointer px-2 py-1 border border-white/10 rounded",
         "disabled:pointer-events-none disabled:opacity-50",
-        "hover:bg-red-900 hover:border-white/5 active:opacity-75",
+        "hover:bg-purple-900 hover:border-white/5 active:opacity-75",
         props.className,
       ].join(" ")}
     >
