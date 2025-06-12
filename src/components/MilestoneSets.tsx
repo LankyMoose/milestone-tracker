@@ -8,6 +8,7 @@ import {
 import { Button } from "./Button"
 import { EditIcon } from "./icons/EditIcon"
 import { PlayIcon } from "./icons/PlayIcon"
+import { TrashIcon } from "./icons/TrashIcon"
 
 export function MilestoneSets() {
   const sets = useComputed(() => Object.entries(milestoneData.value))
@@ -29,6 +30,22 @@ export function MilestoneSets() {
             <li className="w-full text-left rounded p-4 flex items-center gap-2 justify-between bg-white/5">
               <div className="font-bold">{set.name}</div>
               <div className="flex gap-4">
+                <button
+                  className="cursor-pointer opacity-75 hover:opacity-100"
+                  onclick={() => {
+                    if (
+                      confirm(
+                        "Are you sure you want to delete this milestone set?"
+                      )
+                    ) {
+                      delete milestoneData.value[id]
+                      milestoneData.notify()
+                    }
+                  }}
+                >
+                  <TrashIcon />
+                </button>
+
                 <button
                   className="cursor-pointer opacity-75 hover:opacity-100"
                   onclick={() => (milestoneSetEditing.value = id)}

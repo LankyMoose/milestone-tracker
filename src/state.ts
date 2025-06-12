@@ -74,6 +74,7 @@ export const createMilestoneSet = () => {
       milestones: [],
     },
   }
+  milestoneSetEditing.value = id
 }
 
 export const exportMilestoneSet = () => {

@@ -11,6 +11,7 @@ import { TimeDisplaySpan } from "./TimeDisplaySpan"
 import { Button } from "./Button"
 import { Modal } from "./dialog/Modal"
 import { Stopwatch } from "./Stopwatch"
+import { Col, Row } from "./Containers"
 
 export function ActiveMilestoneSetView() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
@@ -37,39 +38,48 @@ export function ActiveMilestoneSetView() {
             <Stopwatch />
             <div className="flex flex-col gap-1 bg-black/50 p-1 rounded text-neutral-300">
               <div className="flex items-center gap-2 bg-white/5 py-1 px-4 rounded">
-                <div className="font-bold">{tempState.value?.name}</div>
-                <div className="font-mono px-2">
-                  Target:{" "}
-                  <TimeDisplaySpan
-                    time={
-                      tempState.value?.time ?? {
-                        hours: 0,
-                        minutes: 0,
-                        seconds: 0,
+                <Col grow>
+                  <Row className="justify-between">
+                    <div className="font-bold">{tempState.value?.name}</div>
+                    <Button
+                      disabled={isInactive}
+                      onclick={() =>
+                        tempState.value &&
+                        handleMilestoneCompleted(tempState.value)
                       }
-                    }
-                  />
-                </div>
-                <div className="font-mono px-2">
-                  PB:{" "}
-                  <TimeDisplaySpan
-                    time={
-                      tempState.value?.personalBest ?? {
-                        hours: 0,
-                        minutes: 0,
-                        seconds: 0,
-                      }
-                    }
-                  />
-                </div>
-                <Button
-                  disabled={isInactive}
-                  onclick={() =>
-                    tempState.value && handleMilestoneCompleted(tempState.value)
-                  }
-                >
-                  Complete
-                </Button>
+                    >
+                      Complete
+                    </Button>
+                  </Row>
+                  <Col>
+                    <Row className="justify-between">
+                      <Row>
+                        <span className="grow">PB: </span>
+                        <TimeDisplaySpan
+                          time={
+                            tempState.value?.personalBest ?? {
+                              hours: 0,
+                              minutes: 0,
+                              seconds: 0,
+                            }
+                          }
+                        />
+                      </Row>
+                      <Row>
+                        <span className="grow">Target: </span>
+                        <TimeDisplaySpan
+                          time={
+                            tempState.value?.time ?? {
+                              hours: 0,
+                              minutes: 0,
+                              seconds: 0,
+                            }
+                          }
+                        />
+                      </Row>
+                    </Row>
+                  </Col>
+                </Col>
               </div>
               <textarea
                 ref={textAreaRef}

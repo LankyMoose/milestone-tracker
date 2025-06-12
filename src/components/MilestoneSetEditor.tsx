@@ -109,17 +109,6 @@ export function MilestoneSetEditor() {
                 value={tempState.value.name}
                 oninput={(e) => (tempState.value.name = e.target.value)}
               />
-              <Button
-                onclick={() => {
-                  if (!setId) return
-                  delete milestoneData.value[setId]
-                  milestoneSetEditing.value = null
-                  milestoneData.notify()
-                }}
-                className="text-base font-normal"
-              >
-                Delete
-              </Button>
             </DialogHeader>
             <div className="flex flex-col gap-1 p-1 bg-black/30 rounded-md">
               {tempState.value.milestones.map((milestone) => (
