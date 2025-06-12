@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "stopwatch",
+  "productName": "milestonetracker",
   "version": "0.1.0",
-  "identifier": "com.stopwatch.dev",
+  "identifier": "com.milestonetracker.dev",
   "build": {
     "beforeBuildCommand": "pnpm build:vite",
     "beforeDevCommand": "pnpm dev:vite",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Stopwatch",
+        "title": "Milestone Tracker",
         "width": 540,
         "height": 420,
         "minWidth": 540,

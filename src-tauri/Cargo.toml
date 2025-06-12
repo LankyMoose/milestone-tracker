@@ -1,7 +1,7 @@
 [package]
-name = "Stopwatch"
+name = "Milestone Tracker"
 version = "0.1.0"
-description = "A simple stopwatch app"
+description = "Create sets of timed milestones and compete against your best times."
 authors = ["LankyMoose"]
 license = ""
 repository = ""
