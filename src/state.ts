@@ -77,32 +77,37 @@ export const createMilestoneSet = () => {
   milestoneSetEditing.value = id
 }
 
-export const exportMilestoneSet = () => {
-  const json = JSON.stringify(milestoneData.value, null, 2)
-  const blob = new Blob([json], { type: "application/json" })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement("a")
-  a.href = url
-  a.download = "milestones.json"
-  a.click()
-  URL.revokeObjectURL(url)
-}
-
-export const importMilestoneSet = () => {
-  const input = document.createElement("input")
-  input.type = "file"
-  input.accept = ".json"
-  input.onchange = () => {
-    const file = input.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        milestoneData.value = JSON.parse(reader.result as string)
+export const jsonUtils = {
+  exportSet: (set: MilestoneSet) => {
+    const json = JSON.stringify(set, null, 2)
+    const blob = new Blob([json], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `${set.name}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+  importSet: () => {
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = ".json"
+    input.onchange = () => {
+      const file = input.files?.[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.readAsText(file)
+        reader.onload = () => {
+          const parsed = JSON.parse(reader.result as string)
+          milestoneData.value = {
+            ...milestoneData.value,
+            [crypto.randomUUID()]: parsed,
+          }
+        }
       }
-      reader.readAsText(file)
     }
-  }
-  input.click()
+    input.click()
+  },
 }
 
 export const handleMilestoneCompleted = (milestone: Milestone) => {

@@ -1,64 +1,62 @@
-import { For, useComputed } from "kaioken"
+import { ElementProps, For, useComputed } from "kaioken"
 import {
   createMilestoneSet,
+  jsonUtils,
   milestoneData,
   milestoneSetEditing,
   selectedMilestoneSetId,
 } from "../state"
-import { Button } from "./Button"
+import { Row } from "./Containers"
 import { EditIcon } from "./icons/EditIcon"
-import { PlayIcon } from "./icons/PlayIcon"
-import { TrashIcon } from "./icons/TrashIcon"
+import { ImportIcon } from "./icons/ImportIcon"
+import { CreateIcon } from "./icons/CreateIcon"
+import { ExportIcon } from "./icons/ExportIcon"
+
+function IconButton(props: ElementProps<"button">) {
+  return (
+    <button
+      className="flex items-center gap-2 cursor-pointer opacity-75 hover:opacity-100 text-xs"
+      {...props}
+    />
+  )
+}
 
 export function MilestoneSets() {
   const sets = useComputed(() => Object.entries(milestoneData.value))
-  console.log(sets.value)
   return (
     <div className="flex flex-col gap-4 p-4 bg-white/5 rounded">
       <div className="flex gap-4 justify-between items-center">
         <h1 className="text-2xl font-bold">Milestone Sets</h1>
-        <Button
-          className="flex items-center justify-center w-8"
-          onclick={() => createMilestoneSet()}
-        >
-          +
-        </Button>
+        <Row gap="gap-4">
+          <IconButton onclick={() => createMilestoneSet()}>
+            <CreateIcon width="1.25rem" />
+            Create
+          </IconButton>
+          <IconButton onclick={() => jsonUtils.importSet()}>
+            <ImportIcon width="1.25rem" />
+            Import
+          </IconButton>
+        </Row>
       </div>
       <ul className="flex flex-col gap-1 bg-black/25 p-1 text-xs rounded-md">
         <For each={sets}>
           {([id, set]) => (
             <li className="w-full text-left rounded p-4 flex items-center gap-2 justify-between bg-white/5">
-              <div className="font-bold">{set.name}</div>
-              <div className="flex gap-4">
-                <button
-                  className="cursor-pointer opacity-75 hover:opacity-100"
-                  onclick={() => {
-                    if (
-                      confirm(
-                        "Are you sure you want to delete this milestone set?"
-                      )
-                    ) {
-                      delete milestoneData.value[id]
-                      milestoneData.notify()
-                    }
-                  }}
-                >
-                  <TrashIcon />
-                </button>
-
-                <button
-                  className="cursor-pointer opacity-75 hover:opacity-100"
-                  onclick={() => (milestoneSetEditing.value = id)}
-                >
-                  <EditIcon />
-                </button>
-
-                <button
-                  className="cursor-pointer opacity-75 hover:opacity-100"
+              <div className="font-bold">
+                <a
+                  href="javascript:void(0)"
                   onclick={() => (selectedMilestoneSetId.value = id)}
                 >
-                  <PlayIcon />
-                </button>
+                  {set.name || "Unnamed Set"}
+                </a>
+              </div>
+              <div className="flex gap-4">
+                <IconButton onclick={() => (milestoneSetEditing.value = id)}>
+                  <EditIcon width="1.25rem" />
+                </IconButton>
+                <IconButton onclick={() => jsonUtils.exportSet(set)}>
+                  <ExportIcon width="1.25rem" />
+                </IconButton>
               </div>
             </li>
           )}

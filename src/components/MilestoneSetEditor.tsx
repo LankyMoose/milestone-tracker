@@ -1,4 +1,11 @@
-import { ElementProps, Transition, useRef, useSignal, useWatch } from "kaioken"
+import {
+  Derive,
+  ElementProps,
+  Transition,
+  useRef,
+  useSignal,
+  useWatch,
+} from "kaioken"
 import {
   Milestone,
   milestoneData,
@@ -12,6 +19,7 @@ import { useTextareaAutoSize } from "@kaioken-core/hooks"
 import { Button } from "./Button"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
 import { Row, Col } from "./Containers"
+import { TrashIcon } from "./icons/TrashIcon"
 
 export function MilestoneSetEditor() {
   const setId = milestoneSetEditing.value
@@ -109,16 +117,44 @@ export function MilestoneSetEditor() {
                 value={tempState.value.name}
                 oninput={(e) => (tempState.value.name = e.target.value)}
               />
+              <button
+                className="cursor-pointer opacity-75 hover:opacity-100"
+                onclick={() => {
+                  if (
+                    milestoneSetEditing.value &&
+                    confirm(
+                      "Are you sure you want to delete this milestone set?"
+                    )
+                  ) {
+                    delete milestoneData.value[milestoneSetEditing.value]
+                    milestoneSetEditing.value = null
+                    milestoneData.notify()
+                  }
+                }}
+              >
+                <TrashIcon />
+              </button>
             </DialogHeader>
             <div className="flex flex-col gap-1 p-1 bg-black/30 rounded-md">
-              {tempState.value.milestones.map((milestone) => (
-                <MilestoneEditor
-                  key={milestone.id}
-                  milestone={milestone}
-                  resetPB={() => resetMilestonePersonalBest(milestone.id)}
-                  delete={() => deleteMilestone(milestone.id)}
-                />
-              ))}
+              <Derive from={tempState}>
+                {(state) => {
+                  if (state.milestones.length === 0) {
+                    return (
+                      <i className="text-sm text-neutral-400 text-center">
+                        No milestones
+                      </i>
+                    )
+                  }
+                  return state.milestones.map((milestone) => (
+                    <MilestoneEditor
+                      key={milestone.id}
+                      milestone={milestone}
+                      resetPB={() => resetMilestonePersonalBest(milestone.id)}
+                      delete={() => deleteMilestone(milestone.id)}
+                    />
+                  ))
+                }}
+              </Derive>
             </div>
             <DialogFooter>
               <div className="flex gap-2 justify-between w-full">
