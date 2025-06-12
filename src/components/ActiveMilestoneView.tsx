@@ -8,7 +8,7 @@ import {
   selectedMilestoneSetId,
 } from "../state"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
-import { Button } from "./Button"
+import { Button } from "./atoms/Button"
 import { Modal } from "./dialog/Modal"
 import { Stopwatch } from "./Stopwatch"
 import { Col, Row } from "./Containers"

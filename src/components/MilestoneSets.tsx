@@ -1,4 +1,4 @@
-import { ElementProps, For, useComputed } from "kaioken"
+import { For, useComputed } from "kaioken"
 import {
   createMilestoneSet,
   jsonUtils,
@@ -11,15 +11,7 @@ import { EditIcon } from "./icons/EditIcon"
 import { ImportIcon } from "./icons/ImportIcon"
 import { CreateIcon } from "./icons/CreateIcon"
 import { ExportIcon } from "./icons/ExportIcon"
-
-function IconButton(props: ElementProps<"button">) {
-  return (
-    <button
-      className="flex items-center gap-2 cursor-pointer opacity-75 hover:opacity-100 text-xs"
-      {...props}
-    />
-  )
-}
+import { IconButton } from "./IconButton"
 
 export function MilestoneSets() {
   const sets = useComputed(() => Object.entries(milestoneData.value))
@@ -45,6 +37,7 @@ export function MilestoneSets() {
               <div className="font-bold">
                 <a
                   href="javascript:void(0)"
+                  className="opacity-75 hover:opacity-100"
                   onclick={() => (selectedMilestoneSetId.value = id)}
                 >
                   {set.name || "Unnamed Set"}

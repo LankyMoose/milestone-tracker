@@ -7,8 +7,11 @@ import {
   isRunning,
   notRunning,
 } from "../state"
-import { Button } from "./Button"
 import { formatTime } from "../utils"
+import { PlayIcon } from "./icons/PlayIcon"
+import { IconButton } from "./IconButton"
+import { PauseIcon } from "./icons/PauseIcon"
+import { UndoIcon } from "./icons/UndoIcon"
 
 export function Stopwatch() {
   const offset = useRef(0) // Last reference time
@@ -60,15 +63,15 @@ export function Stopwatch() {
         </Derive>
       </span>
       <div className="flex gap-4 justify-center items-center">
-        <Button disabled={isRunning} onclick={start}>
-          Start
-        </Button>
-        <Button disabled={notRunning} onclick={pause}>
-          Pause
-        </Button>
-        <Button disabled={isInactive} onclick={reset}>
-          Reset
-        </Button>
+        <IconButton disabled={isRunning} onclick={start}>
+          <PlayIcon />
+        </IconButton>
+        <IconButton disabled={notRunning} onclick={pause}>
+          <PauseIcon />
+        </IconButton>
+        <IconButton disabled={isInactive} onclick={reset}>
+          <UndoIcon />
+        </IconButton>
       </div>
     </div>
   )
