@@ -4,7 +4,7 @@ export function IconButton(props: ElementProps<"button">) {
   return (
     <button
       className={cls(
-        "flex items-center gap-2 opacity-75 text-xs",
+        "flex items-center gap-1 opacity-75 text-xs",
         "disabled:opacity-25",
         "not-disabled:hover:opacity-100 not-disabled:cursor-pointer"
       )}

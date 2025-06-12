@@ -154,12 +154,16 @@ export const handleMilestoneCompleted = (milestone: Milestone) => {
     }
   }
   if (currentMilestoneIndex.value === currentSet.milestones.length - 1) {
-    currentMilestoneIndex.value = 0
-    currentTime.value = 0
-    clearInterval(interval.value)
-    interval.value = -1
+    finishRun()
     alert("All milestones completed!")
   } else {
     currentMilestoneIndex.value++
   }
+}
+
+export function finishRun() {
+  currentMilestoneIndex.value = 0
+  currentTime.value = 0
+  clearInterval(interval.value)
+  interval.value = -1
 }

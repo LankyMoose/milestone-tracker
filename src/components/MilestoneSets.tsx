@@ -22,11 +22,11 @@ export function MilestoneSets() {
         <h1 className="text-2xl font-bold">Milestone Sets</h1>
         <Row gap="gap-4">
           <IconButton onclick={() => createMilestoneSet()}>
-            <CreateIcon width="1.25rem" />
+            <CreateIcon width="1rem" />
             Create
           </IconButton>
           <IconButton onclick={() => jsonUtils.importSet()}>
-            <ImportIcon width="1.25rem" />
+            <ImportIcon width="1rem" />
             Import
           </IconButton>
         </Row>

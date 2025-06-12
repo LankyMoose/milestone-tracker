@@ -43,7 +43,7 @@ export function Modal({ state, close, children }: ModalProps) {
       style={{ opacity }}
     >
       <div
-        className="modal-content p-4"
+        className="modal-content p-2"
         style={{
           transform: `translate(-50%, ${translateY}%) scale(${scale})`,
         }}

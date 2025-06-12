@@ -1,7 +1,7 @@
 import { Derive, useRef } from "kaioken"
 import {
-  currentMilestoneIndex,
   currentTime,
+  finishRun,
   interval,
   isInactive,
   isRunning,
@@ -35,12 +35,6 @@ export function Stopwatch() {
     }
   }
 
-  const reset = () => {
-    pause()
-    currentTime.value = 0
-    currentMilestoneIndex.value = 0
-  }
-
   return (
     <div className="flex flex-col gap-4 justify-center items-center p-4 rounded">
       <span className="font-bold select-none font-mono">
@@ -69,7 +63,7 @@ export function Stopwatch() {
         <IconButton disabled={notRunning} onclick={pause}>
           <PauseIcon width="2rem" height="2rem" />
         </IconButton>
-        <IconButton disabled={isInactive} onclick={reset}>
+        <IconButton disabled={isInactive} onclick={finishRun}>
           <UndoIcon width="2rem" height="2rem" />
         </IconButton>
       </div>

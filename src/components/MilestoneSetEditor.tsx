@@ -16,9 +16,12 @@ import { DialogHeader } from "./dialog/DialogHeader"
 import { DialogFooter } from "./dialog/DialogFooter"
 import { Drawer } from "./dialog/Drawer"
 import { useTextareaAutoSize } from "@kaioken-core/hooks"
-import { Button } from "./atoms/Button"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
 import { Row, Col } from "./Containers"
+import { IconButton } from "./IconButton"
+import { TrashIcon } from "./icons/TrashIcon"
+import { UndoIcon } from "./icons/UndoIcon"
+import { CreateIcon } from "./icons/CreateIcon"
 
 export function MilestoneSetEditor() {
   const tempState = useSignal<MilestoneSet>({
@@ -109,7 +112,7 @@ export function MilestoneSetEditor() {
             <DialogHeader>
               <input
                 placeholder="Set Name"
-                className="bg-black/40 px-2 w-full"
+                className="bg-black/40 px-2 py-1 w-full rounded"
                 type="text"
                 value={tempState.value.name}
                 oninput={(e) => (tempState.value.name = e.target.value)}
@@ -137,13 +140,30 @@ export function MilestoneSetEditor() {
               </Derive>
             </div>
             <DialogFooter>
-              <div className="flex gap-2 justify-between w-full">
+              <div className="flex px-2 gap-2 justify-between w-full">
                 <div>
-                  <Button onclick={cancel}>Cancel</Button>
+                  <IconButton onclick={cancel}>
+                    <UndoIcon width="1rem" />
+                    Undo Changes
+                  </IconButton>
                 </div>
-                <div className={"flex gap-2"}>
-                  <Button onclick={resetPBs}>Reset All PBs</Button>
-                  <Button onclick={addMilestone}>New Milestone</Button>
+                <div className={"flex gap-4"}>
+                  <IconButton
+                    onclick={resetPBs}
+                    disabled={
+                      tempState.value.milestones.length === 0 ||
+                      tempState.value.milestones.some(
+                        (m) => m.personalBest !== null
+                      )
+                    }
+                  >
+                    <UndoIcon width="1rem" />
+                    Reset All PBs
+                  </IconButton>
+                  <IconButton onclick={addMilestone}>
+                    <CreateIcon width="1rem" />
+                    New Milestone
+                  </IconButton>
                 </div>
               </div>
             </DialogFooter>
@@ -177,7 +197,7 @@ function MilestoneEditor({
           placeholder={"Milestone Name"}
           value={milestone.name}
           oninput={(e) => (milestone.name = e.target.value)}
-          className={"bg-black/30 px-2 grow"}
+          className={"bg-black/30 px-2 grow rounded"}
         />
         <Row wrap>
           <Row>
@@ -214,7 +234,7 @@ function MilestoneEditor({
           <textarea
             ref={noteTextAreaRef}
             placeholder={"Notes"}
-            className="px-2 py-1 bg-black/40 text-xs w-full resize-none"
+            className="px-2 py-1 bg-black/30 text-xs w-full rounded resize-none"
             value={milestone.note}
             oninput={(e) => (milestone.note = e.target.value)}
           />
@@ -222,10 +242,17 @@ function MilestoneEditor({
       </Col>
 
       <Col className="text-xs">
-        <Button onclick={_delete}>Delete</Button>
-        <Button onclick={resetPB} disabled={milestone.personalBest === null}>
+        <IconButton onclick={_delete}>
+          <TrashIcon width="1rem" />
+          Delete
+        </IconButton>
+        <IconButton
+          onclick={resetPB}
+          disabled={milestone.personalBest === null}
+        >
+          <UndoIcon width="1rem" />
           Reset PB
-        </Button>
+        </IconButton>
       </Col>
     </Row>
   )
@@ -233,6 +260,10 @@ function MilestoneEditor({
 
 const NumberInput = (props: ElementProps<"input">) => {
   return (
-    <input type="number" className={"w-auto bg-black/30 pl-2"} {...props} />
+    <input
+      type="number"
+      className={"w-auto bg-black/30 pl-2 rounded"}
+      {...props}
+    />
   )
 }

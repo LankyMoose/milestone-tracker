@@ -1,6 +1,7 @@
 import { Transition, useSignal, useWatch } from "kaioken"
 import {
   currentMilestoneIndex,
+  finishRun,
   handleMilestoneCompleted,
   isActive,
   isInactive,
@@ -34,15 +35,21 @@ export function ActiveMilestoneSetView() {
           <Modal
             state={state}
             close={() => {
-              if (isActive.value) return
+              if (
+                isActive.value &&
+                !confirm("Area you sure you want to cancel the run?")
+              ) {
+                return
+              }
+              finishRun()
               selectedMilestoneSetId.value = null
             }}
           >
             <Col>
               <Stopwatch />
-              <Col className="bg-black/30 p-2 rounded">
+              <Col className="bg-white/5 p-2 rounded">
                 <h2 className="font-mono font-bold">Current Milestone</h2>
-                <div className="flex items-center gap-2 bg-white/5  p-2 rounded">
+                <div className="flex items-center gap-2 bg-black/25 p-2 rounded">
                   <Col grow>
                     <Row className="justify-between">
                       <div className="font-bold">{tempState.value?.name}</div>
@@ -81,7 +88,7 @@ export function ActiveMilestoneSetView() {
                   </Col>
                 </div>
                 <h2 className="font-mono font-bold">Notes</h2>
-                <pre className="p-2 bg-white/5 w-full rounded text-sm text-neutral-300">
+                <pre className="p-2 bg-black/25 w-full rounded text-sm text-neutral-300">
                   <code>{tempState.value?.note || <i>No Notes</i>}</code>
                 </pre>
               </Col>

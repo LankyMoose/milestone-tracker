@@ -32,7 +32,7 @@ export function Drawer({ state, close, children }: DrawerProps) {
       style={{ opacity }}
     >
       <div
-        className="drawer-content p-4"
+        className="drawer-content p-2"
         style={{ transform: `translateY(${translateX}%)` }}
       >
         {children}
