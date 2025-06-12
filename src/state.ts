@@ -49,7 +49,3 @@ export const createMilestone = () => {
   milestones.notify()
   return newMilestone
 }
-
-export const deleteMilestone = (id: string) => {
-  milestones.value = milestones.value.filter((m) => m.id !== id)
-}
