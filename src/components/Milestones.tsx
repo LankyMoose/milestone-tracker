@@ -118,8 +118,6 @@ export function Milestones() {
               width: "100%",
               borderCollapse: "separate",
             }}
-            // @ts-ignore (not present in kaioken types)
-            cellSpacing="0"
             className="gap-1 p-1 bg-black/50 rounded text-neutral-300"
           >
             {editing.value ? (
