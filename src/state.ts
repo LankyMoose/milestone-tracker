@@ -1,4 +1,4 @@
-import { computed, signal } from "kaioken"
+import { computed, signal, watch } from "kaioken"
 import { formatTime } from "./utils"
 
 export const currentTime = signal(0) // Accumulated time in ms
@@ -7,8 +7,6 @@ export const isInactive = computed(() => currentTime.value === 0)
 export const interval = signal(-1) // Interval ID or -1 if stopped
 export const isRunning = computed(() => interval.value !== -1)
 export const notRunning = computed(() => interval.value === -1)
-
-export const milestoneSetEditing = signal<string | null>(null)
 
 export type Time = {
   hours: number
@@ -50,6 +48,17 @@ const initialMilestones = stored
 export const milestoneData = signal<MilestoneSetsData>(initialMilestones)
 export const currentMilestoneIndex = signal(0)
 export const selectedMilestoneSetId = signal<string | null>(null)
+export const milestoneSetEditing = signal<string | null>(null)
+
+watch(() => {
+  const editing = milestoneSetEditing.value !== null,
+    selected = selectedMilestoneSetId.value !== null
+  if (editing || selected) {
+    document.body.style.overflow = "hidden"
+  } else {
+    document.body.style.overflow = ""
+  }
+})
 
 export const currentMilestone = computed(() => {
   const sets = milestoneData.value,
