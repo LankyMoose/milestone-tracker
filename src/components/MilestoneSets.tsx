@@ -35,15 +35,22 @@ export function MilestoneSets() {
                 </a>
               </div>
               <div className="flex gap-4">
-                <IconButton onclick={() => (milestoneSetEditing.value = id)}>
-                  <EditIcon width="1.25rem" />
-                  Edit
-                </IconButton>
-                <IconButton onclick={() => jsonUtils.exportSet(set)}>
-                  <ExportIcon width="1.25rem" />
-                  Export
+                <IconButton
+                  title={"Edit"}
+                  onclick={() => (milestoneSetEditing.value = id)}
+                >
+                  <EditIcon width="1rem" />
+                  <span className="hidden sm:inline">Edit</span>
                 </IconButton>
                 <IconButton
+                  title={"Export"}
+                  onclick={() => jsonUtils.exportSet(set)}
+                >
+                  <ExportIcon width="1rem" />
+                  <span className="hidden sm:inline">Export</span>
+                </IconButton>
+                <IconButton
+                  title={"Delete"}
                   onclick={() => {
                     if (
                       confirm(
@@ -55,8 +62,8 @@ export function MilestoneSets() {
                     }
                   }}
                 >
-                  <TrashIcon width="1.25rem" />
-                  Delete
+                  <TrashIcon width="1rem" />
+                  <span className="hidden sm:inline">Delete</span>
                 </IconButton>
               </div>
             </li>

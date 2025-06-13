@@ -38,13 +38,13 @@ export function Stopwatch() {
       </span>
       <div className="flex gap-4 justify-center items-center">
         <IconButton disabled={isRunning} onclick={startOrResumeRun}>
-          <PlayIcon width="2rem" height="2rem" />
+          <PlayIcon width="3rem" height="3rem" />
         </IconButton>
         <IconButton disabled={notRunning} onclick={pauseRun}>
-          <PauseIcon width="2rem" height="2rem" />
+          <PauseIcon width="3rem" height="3rem" />
         </IconButton>
         <IconButton disabled={isInactive} onclick={finishRun}>
-          <UndoIcon width="2rem" height="2rem" />
+          <UndoIcon width="3rem" height="3rem" />
         </IconButton>
       </div>
     </div>
