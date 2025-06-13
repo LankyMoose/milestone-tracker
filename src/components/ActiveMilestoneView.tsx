@@ -1,13 +1,12 @@
 import { confirm } from "@tauri-apps/plugin-dialog"
 import { Portal, Transition, useSignal, useWatch } from "kaioken"
 import {
-  currentMilestoneIndex,
+  currentMilestone,
   finishRun,
   handleMilestoneCompleted,
   isActive,
   isInactive,
   Milestone,
-  milestoneData,
   selectedMilestoneSetId,
 } from "../state"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
@@ -21,13 +20,9 @@ import { IconButton } from "./IconButton"
 export function ActiveMilestoneSetView() {
   const tempState = useSignal<Milestone | null>(null)
   useWatch(() => {
-    const setId = selectedMilestoneSetId.value,
-      milestoneSets = milestoneData.value,
-      milestoneIdx = currentMilestoneIndex.value
-    if (setId === null) return
-    tempState.value = structuredClone(
-      milestoneSets[setId].milestones[milestoneIdx]
-    )
+    const ms = currentMilestone.value
+    if (ms === null) return
+    tempState.value = structuredClone(ms)
   })
   return (
     <Portal container={document.getElementById("portal-root")!}>

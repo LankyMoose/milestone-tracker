@@ -10,7 +10,6 @@ export const isActive = computed(() => currentTime.value > 0)
 export const isInactive = computed(() => currentTime.value === 0)
 export const interval = signal(-1) // Interval ID or -1 if stopped
 export const isRunning = computed(() => interval.value !== -1)
-export const notRunning = computed(() => interval.value === -1)
 
 export type Time = {
   hours: number
@@ -51,9 +50,22 @@ const initialMilestones = stored
   : defaultMilestoneSetsData
 
 export const milestoneData = signal<MilestoneSetsData>(initialMilestones)
+milestoneData.subscribe((m) =>
+  localStorage.setItem(MILESTONES_STORAGE_KEY, JSON.stringify(m))
+)
+
+export const milestoneSetEditing = signal<string | null>(null)
 export const currentMilestoneIndex = signal(0)
 export const selectedMilestoneSetId = signal<string | null>(null)
-export const milestoneSetEditing = signal<string | null>(null)
+export const currentMilestone = computed(() => {
+  const sets = milestoneData.value,
+    selected = selectedMilestoneSetId.value,
+    idx = currentMilestoneIndex.value
+  if (selected === null) {
+    return null
+  }
+  return sets[selected].milestones[idx] || null
+})
 
 watch(() => {
   const editing = milestoneSetEditing.value !== null,
@@ -64,19 +76,6 @@ watch(() => {
     document.body.style.overflow = ""
   }
 })
-
-export const currentMilestone = computed(() => {
-  const sets = milestoneData.value,
-    selected = selectedMilestoneSetId.value
-  if (selected === null) {
-    return null
-  }
-  return sets[selected].milestones[currentMilestoneIndex.value]
-})
-
-milestoneData.subscribe((m) =>
-  localStorage.setItem(MILESTONES_STORAGE_KEY, JSON.stringify(m))
-)
 
 export const createMilestoneSet = () => {
   const id = crypto.randomUUID()
