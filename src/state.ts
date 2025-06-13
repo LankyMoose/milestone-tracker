@@ -92,7 +92,7 @@ export const createMilestoneSet = () => {
   milestoneSetEditing.value = id
 }
 
-export const jsonUtils = {
+export const fileUtils = {
   exportSet: (set: MilestoneSet) => {
     const json = JSON.stringify(set, null, 2)
     const blob = new Blob([json], { type: "application/json" })

@@ -7,7 +7,7 @@ import { ImportIcon } from "./components/icons/ImportIcon"
 import { MilestoneSetEditor } from "./components/MilestoneSetEditor"
 import { MilestoneSets } from "./components/MilestoneSets"
 import { Settings } from "./components/Settings"
-import { createMilestoneSet, jsonUtils, settingsOpen } from "./state"
+import { createMilestoneSet, fileUtils, settingsOpen } from "./state"
 
 export function App() {
   return (
@@ -17,7 +17,7 @@ export function App() {
           <CreateIcon width="1rem" />
           Create New Set
         </IconButton>
-        <IconButton onclick={() => jsonUtils.importSet()}>
+        <IconButton onclick={() => fileUtils.importSet()}>
           <ImportIcon width="1rem" />
           Import Set
         </IconButton>

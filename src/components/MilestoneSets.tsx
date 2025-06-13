@@ -1,7 +1,7 @@
 import { confirm } from "@tauri-apps/plugin-dialog"
 import { Derive, For, useComputed } from "kaioken"
 import {
-  jsonUtils,
+  fileUtils,
   milestoneData,
   milestoneSetEditing,
   selectedMilestoneSetId,
@@ -45,7 +45,7 @@ export function MilestoneSets() {
                 </IconButton>
                 <IconButton
                   title={"Export"}
-                  onclick={() => jsonUtils.exportSet(set)}
+                  onclick={() => fileUtils.exportSet(set)}
                 >
                   <ExportIcon width="1rem" />
                   <span className="hidden sm:inline">Export</span>
