@@ -1,3 +1,4 @@
+import { confirm } from "@tauri-apps/plugin-dialog"
 import { Portal, Transition, useSignal, useWatch } from "kaioken"
 import {
   currentMilestoneIndex,
@@ -35,15 +36,20 @@ export function ActiveMilestoneSetView() {
           return (
             <Modal
               state={state}
-              close={() => {
-                if (
-                  isActive.value &&
-                  !confirm("Area you sure you want to cancel the run?")
-                ) {
+              close={async () => {
+                if (!isActive.value) {
+                  selectedMilestoneSetId.value = null
                   return
                 }
-                finishRun()
-                selectedMilestoneSetId.value = null
+
+                const confirmed = await confirm(
+                  "Are you sure you want to cancel the run?",
+                  { title: "Cancel Run", cancelLabel: "No", okLabel: "Yes" }
+                )
+                if (confirmed) {
+                  finishRun()
+                  selectedMilestoneSetId.value = null
+                }
               }}
             >
               <Col>

@@ -1,3 +1,4 @@
+import { confirm } from "@tauri-apps/plugin-dialog"
 import { Derive, For, useComputed } from "kaioken"
 import {
   jsonUtils,
@@ -51,12 +52,17 @@ export function MilestoneSets() {
                 </IconButton>
                 <IconButton
                   title={"Delete"}
-                  onclick={() => {
-                    if (
-                      confirm(
-                        "Are you sure you want to delete this milestone set?"
-                      )
-                    ) {
+                  onclick={async () => {
+                    const confirmed = await confirm(
+                      "Are you sure you want to delete this milestone set?",
+                      {
+                        title: "Delete Milestone Set",
+                        kind: "info",
+                        cancelLabel: "Cancel",
+                        okLabel: "Delete",
+                      }
+                    )
+                    if (confirmed) {
                       delete milestoneData.value[id]
                       milestoneData.notify()
                     }
