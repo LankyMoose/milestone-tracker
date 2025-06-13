@@ -16,6 +16,7 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
+    accent-color: var(--color-purple-950, currentColor);
   }
 }
 
@@ -27,11 +28,6 @@
   min-height: 100vh;
 }
 
-select {
-  background-color: rgb(21 19 19);
-  color: #e5e5e5;
-  color-scheme: dark;
-}
 
 .backdrop {
   position: fixed;

@@ -1,11 +1,12 @@
-import { Derive, useRef } from "kaioken"
+import { Derive } from "kaioken"
 import {
   currentTime,
   finishRun,
-  interval,
   isInactive,
   isRunning,
   notRunning,
+  pauseRun,
+  startOrResumeRun,
 } from "../state"
 import { formatTime } from "../utils"
 import { PlayIcon } from "./icons/PlayIcon"
@@ -14,27 +15,6 @@ import { PauseIcon } from "./icons/PauseIcon"
 import { UndoIcon } from "./icons/UndoIcon"
 
 export function Stopwatch() {
-  const offset = useRef(0) // Last reference time
-
-  const start = () => {
-    if (interval.value === -1) {
-      offset.current = performance.now()
-      interval.value = window.setInterval(() => {
-        const now = performance.now()
-        const delta = now - offset.current
-        offset.current = now
-        currentTime.value += delta
-      }, 1000 / 60)
-    }
-  }
-
-  const pause = () => {
-    if (interval.value !== -1) {
-      clearInterval(interval.value)
-      interval.value = -1
-    }
-  }
-
   return (
     <div className="flex flex-col gap-4 justify-center items-center p-4 rounded">
       <span className="font-bold select-none font-mono">
@@ -57,10 +37,10 @@ export function Stopwatch() {
         </Derive>
       </span>
       <div className="flex gap-4 justify-center items-center">
-        <IconButton disabled={isRunning} onclick={start}>
+        <IconButton disabled={isRunning} onclick={startOrResumeRun}>
           <PlayIcon width="2rem" height="2rem" />
         </IconButton>
-        <IconButton disabled={notRunning} onclick={pause}>
+        <IconButton disabled={notRunning} onclick={pauseRun}>
           <PauseIcon width="2rem" height="2rem" />
         </IconButton>
         <IconButton disabled={isInactive} onclick={finishRun}>

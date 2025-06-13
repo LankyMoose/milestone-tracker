@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@kaioken-core/hooks": "^0.1.0",
+    "@tauri-apps/plugin-global-shortcut": "~2",
     "kaioken": "0.40.4"
   }
 }

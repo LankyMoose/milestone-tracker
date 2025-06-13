@@ -1,6 +1,7 @@
 import {
   Derive,
   ElementProps,
+  Portal,
   Transition,
   useRef,
   useSignal,
@@ -88,91 +89,93 @@ export function MilestoneSetEditor() {
   }
 
   return (
-    <Transition
-      in={milestoneSetEditing.value !== null}
-      onTransitionEnd={(s) =>
-        s === "exited" &&
-        (tempState.value = {
-          version: 0,
-          name: "",
-          milestones: [],
-        })
-      }
-      element={(state) => {
-        return (
-          <Drawer
-            close={() => {
-              if (milestoneSetEditing.value === null) return
-              milestoneData.value = {
-                ...milestoneData.value,
-                [milestoneSetEditing.value]: tempState.value,
-              }
-              milestoneSetEditing.value = null
-            }}
-            state={state}
-          >
-            <DialogHeader>
-              <input
-                placeholder="Set Name"
-                className="bg-black/40 px-2 py-1 w-full rounded"
-                type="text"
-                value={tempState.value.name}
-                oninput={(e) => (tempState.value.name = e.target.value)}
-              />
-            </DialogHeader>
-            <div className="flex flex-col gap-1 p-1 bg-black/30 rounded-md overflow-y-auto max-h-[60vh]">
-              <Derive from={tempState}>
-                {(state) => {
-                  if (state.milestones.length === 0) {
-                    return (
-                      <i className="text-sm text-neutral-400 text-center">
-                        No milestones
-                      </i>
-                    )
-                  }
-                  return state.milestones.map((milestone) => (
-                    <MilestoneEditor
-                      key={milestone.id}
-                      milestone={milestone}
-                      resetPB={() => resetMilestonePersonalBest(milestone.id)}
-                      delete={() => deleteMilestone(milestone.id)}
-                    />
-                  ))
-                }}
-              </Derive>
-            </div>
-            <DialogFooter>
-              <div className="flex px-2 gap-2 justify-between w-full">
-                <div>
-                  <IconButton onclick={cancel}>
-                    <UndoIcon width="1rem" />
-                    Undo Changes
-                  </IconButton>
-                </div>
-                <div className={"flex gap-4"}>
-                  <IconButton
-                    onclick={resetPBs}
-                    disabled={
-                      tempState.value.milestones.length === 0 ||
-                      tempState.value.milestones.some(
-                        (m) => m.personalBest !== null
+    <Portal container={document.getElementById("portal-root")!}>
+      <Transition
+        in={milestoneSetEditing.value !== null}
+        onTransitionEnd={(s) =>
+          s === "exited" &&
+          (tempState.value = {
+            version: 0,
+            name: "",
+            milestones: [],
+          })
+        }
+        element={(state) => {
+          return (
+            <Drawer
+              close={() => {
+                if (milestoneSetEditing.value === null) return
+                milestoneData.value = {
+                  ...milestoneData.value,
+                  [milestoneSetEditing.value]: tempState.value,
+                }
+                milestoneSetEditing.value = null
+              }}
+              state={state}
+            >
+              <DialogHeader>
+                <input
+                  placeholder="Set Name"
+                  className="bg-black/40 px-2 py-1 w-full rounded"
+                  type="text"
+                  value={tempState.value.name}
+                  oninput={(e) => (tempState.value.name = e.target.value)}
+                />
+              </DialogHeader>
+              <div className="flex flex-col gap-1 p-1 bg-black/30 rounded-md overflow-y-auto max-h-[60vh]">
+                <Derive from={tempState}>
+                  {(state) => {
+                    if (state.milestones.length === 0) {
+                      return (
+                        <i className="text-sm text-neutral-400 text-center">
+                          No milestones
+                        </i>
                       )
                     }
-                  >
-                    <UndoIcon width="1rem" />
-                    Reset All PBs
-                  </IconButton>
-                  <IconButton onclick={addMilestone}>
-                    <CreateIcon width="1rem" />
-                    New Milestone
-                  </IconButton>
-                </div>
+                    return state.milestones.map((milestone) => (
+                      <MilestoneEditor
+                        key={milestone.id}
+                        milestone={milestone}
+                        resetPB={() => resetMilestonePersonalBest(milestone.id)}
+                        delete={() => deleteMilestone(milestone.id)}
+                      />
+                    ))
+                  }}
+                </Derive>
               </div>
-            </DialogFooter>
-          </Drawer>
-        )
-      }}
-    />
+              <DialogFooter>
+                <div className="flex px-2 gap-2 justify-between w-full">
+                  <div>
+                    <IconButton onclick={cancel}>
+                      <UndoIcon width="1rem" />
+                      Undo Changes
+                    </IconButton>
+                  </div>
+                  <div className={"flex gap-4"}>
+                    <IconButton
+                      onclick={resetPBs}
+                      disabled={
+                        tempState.value.milestones.length === 0 ||
+                        tempState.value.milestones.every(
+                          (m) => m.personalBest === null
+                        )
+                      }
+                    >
+                      <UndoIcon width="1rem" />
+                      Reset All PBs
+                    </IconButton>
+                    <IconButton onclick={addMilestone}>
+                      <CreateIcon width="1rem" />
+                      New Milestone
+                    </IconButton>
+                  </div>
+                </div>
+              </DialogFooter>
+            </Drawer>
+          )
+        }}
+      />
+    </Portal>
   )
 }
 

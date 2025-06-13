@@ -3,6 +3,8 @@ import { formatTime } from "./utils"
 
 const VERSION = 0.1
 
+export const settingsOpen = signal(false)
+
 export const currentTime = signal(0) // Accumulated time in ms
 export const isActive = computed(() => currentTime.value > 0)
 export const isInactive = computed(() => currentTime.value === 0)
@@ -191,9 +193,30 @@ export const handleMilestoneCompleted = (milestone: Milestone) => {
   }
 }
 
+export function pauseRun() {
+  clearInterval(interval.value)
+  interval.value = -1
+}
+
 export function finishRun() {
   currentMilestoneIndex.value = 0
   currentTime.value = 0
   clearInterval(interval.value)
   interval.value = -1
+}
+
+const offset = {
+  current: 0,
+}
+
+export function startOrResumeRun() {
+  if (interval.value === -1) {
+    offset.current = performance.now()
+    interval.value = window.setInterval(() => {
+      const now = performance.now()
+      const delta = now - offset.current
+      offset.current = now
+      currentTime.value += delta
+    }, 1000 / 60)
+  }
 }
