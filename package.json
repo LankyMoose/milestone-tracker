@@ -25,6 +25,8 @@
     "@kaioken-core/hooks": "^0.1.0",
     "@tauri-apps/plugin-dialog": "~2",
     "@tauri-apps/plugin-global-shortcut": "~2",
+    "chart.js": "^4.4.9",
+    "chartjs-plugin-zoom": "^2.2.0",
     "kaioken": "0.40.4"
   }
 }

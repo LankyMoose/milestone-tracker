@@ -1,7 +1,7 @@
 import { computed, signal, watch } from "kaioken"
 import { formatTime } from "./utils"
 
-const VERSION = 0.1
+const VERSION = 0.2
 
 export const settingsOpen = signal(false)
 
@@ -10,8 +10,15 @@ export const isActive = computed(() => currentTime.value > 0)
 export const isInactive = computed(() => currentTime.value === 0)
 export const interval = signal(-1) // Interval ID or -1 if stopped
 export const isRunning = computed(() => interval.value !== -1)
+export const currentRunData = signal<RunData | null>(null)
+
+export type RunData = {
+  date: string
+  times: number[]
+}
 
 export type Time = {
+  raw: number
   hours: number
   minutes: number
   seconds: number
@@ -30,6 +37,7 @@ export type MilestoneSet = {
   version: number
   name: string
   milestones: Milestone[]
+  runHistory?: RunData[]
 }
 
 export type MilestoneSetsData = {
@@ -38,6 +46,33 @@ export type MilestoneSetsData = {
 
 export const MILESTONES_STORAGE_KEY = "milestones"
 
+const upgradeSet = (data: MilestoneSet) => {
+  let didPerformUpgrade = false
+  let maxIters = 1_000
+  let i = 0
+
+  while (data.version < VERSION && ++i < maxIters) {
+    switch (data.version) {
+      case 0.1:
+        data.milestones.forEach((milestone) => {
+          const { time, personalBest } = milestone
+          time.raw =
+            time.hours * 3600000 + time.minutes * 60000 + time.seconds * 1000
+          if (personalBest) {
+            personalBest.raw =
+              personalBest.hours * 3600000 +
+              personalBest.minutes * 60000 +
+              personalBest.seconds * 1000
+          }
+        })
+        data.version = 0.2
+        didPerformUpgrade = true
+        break
+    }
+  }
+  return didPerformUpgrade
+}
+
 const stored = localStorage.getItem(MILESTONES_STORAGE_KEY)
 const defaultMilestoneSetsData: MilestoneSetsData = {}
 
@@ -45,6 +80,15 @@ const initialMilestones = stored
   ? (() => {
       const parsed = JSON.parse(stored)
       if (typeof parsed !== "object") return defaultMilestoneSetsData
+      let needsReSave = false
+      for (const id in parsed) {
+        if (upgradeSet(parsed[id])) {
+          needsReSave = true
+        }
+      }
+      if (needsReSave) {
+        localStorage.setItem(MILESTONES_STORAGE_KEY, JSON.stringify(parsed))
+      }
       return parsed
     })()
   : defaultMilestoneSetsData
@@ -57,6 +101,16 @@ milestoneData.subscribe((m) =>
 export const milestoneSetEditing = signal<string | null>(null)
 export const currentMilestoneIndex = signal(0)
 export const selectedMilestoneSetId = signal<string | null>(null)
+
+watch(() => {
+  if (selectedMilestoneSetId.value !== null) {
+    currentRunData.value = {
+      date: new Date().toISOString(),
+      times: [],
+    }
+  }
+})
+
 export const currentMilestone = computed(() => {
   const sets = milestoneData.value,
     selected = selectedMilestoneSetId.value,
@@ -123,17 +177,7 @@ export const fileUtils = {
             ) {
               throw "Incompatible file data"
             }
-
-            // migrate
-            // let currentVersion = parsed.version
-            // let maxIters = 1_000
-            // let i = 0
-            // while (currentVersion < VERSION && ++i < maxIters) {
-            //   switch (currentVersion) {
-            //     case 0.1:
-            //       break
-            //   }
-            // }
+            upgradeSet(parsed)
           } catch (error) {
             alert(error)
             return
@@ -150,42 +194,19 @@ export const fileUtils = {
   },
 }
 
-export const handleMilestoneCompleted = (milestone: Milestone) => {
+export const handleMilestoneCompleted = () => {
   const sets = milestoneData.value
   const selected = selectedMilestoneSetId.value
   if (selected === null) {
     return
   }
-
-  const totalMs =
-    milestone.personalBest === null
-      ? Infinity
-      : milestone.personalBest.hours * 60 * 60 * 1000 +
-        milestone.personalBest.minutes * 60 * 1000 +
-        milestone.personalBest.seconds * 1000 +
-        milestone.personalBest.hundredths * 10
-
   const currentSet = sets[selected]
-  if (currentTime.value < totalMs) {
-    const time = formatTime(currentTime.value)
-    milestoneData.value = {
-      ...sets,
-      [selected]: {
-        ...currentSet,
-        milestones: currentSet.milestones.map((m) => {
-          if (m.id === milestone.id) {
-            return {
-              ...m,
-              personalBest: time,
-            }
-          }
-          return m
-        }),
-      },
-    }
-  }
+  currentRunData.value!.times.push(currentTime.value)
+  currentRunData.notify()
+
   if (currentMilestoneIndex.value === currentSet.milestones.length - 1) {
     finishRun()
+    // TODO: replace with native dialog
     alert("All milestones completed!")
   } else {
     currentMilestoneIndex.value++
@@ -198,10 +219,39 @@ export function pauseRun() {
 }
 
 export function finishRun() {
+  const setId = selectedMilestoneSetId.value
+  if (!setId) return
+  const set = milestoneData.value[setId]
+
   currentMilestoneIndex.value = 0
   currentTime.value = 0
   clearInterval(interval.value)
   interval.value = -1
+  milestoneData.value = {
+    ...milestoneData.value,
+    [setId]: {
+      ...set,
+      milestones: set.milestones.map((milestone, i) => {
+        const time = (currentRunData.value?.times ?? [])[i]
+        if (time === undefined) return milestone
+
+        const formattedTime = formatTime(time)
+        const bestMs = milestone.personalBest?.raw ?? Infinity
+
+        if (time < bestMs) {
+          return {
+            ...milestone,
+            personalBest: formattedTime,
+          }
+        }
+        return milestone
+      }),
+      runHistory: set.runHistory
+        ? [...set.runHistory, currentRunData.value!]
+        : [currentRunData.value!],
+    },
+  }
+  currentRunData.value = null
 }
 
 const offset = {

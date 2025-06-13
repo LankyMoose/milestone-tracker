@@ -7,5 +7,5 @@ export function formatTime(ms: number): Time {
   const seconds = totalSeconds % 60
   const hundredths = Math.floor((ms % 1000) / 10)
 
-  return { hours, minutes, seconds, hundredths }
+  return { hours, minutes, seconds, hundredths, raw: ms }
 }

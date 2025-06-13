@@ -6,7 +6,6 @@ import {
 } from "@tauri-apps/plugin-global-shortcut"
 import { watch } from "kaioken"
 import {
-  currentMilestone,
   handleMilestoneCompleted,
   isRunning,
   pauseRun,
@@ -142,9 +141,7 @@ export const shortcuts = {
     name: "Complete milestone",
     modifier: "Alt",
     character: "C",
-    handler: () =>
-      currentMilestone.value &&
-      handleMilestoneCompleted(currentMilestone.value),
+    handler: () => handleMilestoneCompleted(),
   }),
   togglePause: defineShortcut({
     name: "Toggle Pause",

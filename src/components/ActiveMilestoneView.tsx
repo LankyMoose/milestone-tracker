@@ -1,5 +1,5 @@
 import { confirm } from "@tauri-apps/plugin-dialog"
-import { Portal, Transition, useSignal, useWatch } from "kaioken"
+import { Portal, Transition, useComputed, useSignal, useWatch } from "kaioken"
 import {
   currentMilestone,
   finishRun,
@@ -7,6 +7,7 @@ import {
   isActive,
   isInactive,
   Milestone,
+  milestoneData,
   selectedMilestoneSetId,
 } from "../state"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
@@ -16,9 +17,39 @@ import { Col, Row } from "./Containers"
 import { ShortcutBadge } from "./ShortcutBadge"
 import { shortcuts } from "../shortcuts"
 import { IconButton } from "./IconButton"
+import { LineChart, LineChartData } from "./charts/LineChart"
 
 export function ActiveMilestoneSetView() {
   const tempState = useSignal<Milestone | null>(null)
+  const graphData = useComputed<LineChartData>(() => {
+    const setId = selectedMilestoneSetId.value
+    if (setId === null)
+      return {
+        labels: [],
+        datasets: [],
+      }
+    const set = milestoneData.value[setId]
+
+    return {
+      xLabels: set.milestones.map((m) => m.name),
+      datasets: [
+        {
+          label: "Target",
+          data: set.milestones.map((ms) => ms.time.raw / 1000),
+          fill: false,
+          borderColor: "green",
+          tension: 0.1,
+        },
+        ...(set.runHistory ?? []).map((run) => ({
+          label: "Run",
+          data: run.times.map((t) => t / 1000),
+          fill: false,
+          borderColor: "blue",
+          tension: 0.1,
+        })),
+      ],
+    }
+  })
   useWatch(() => {
     const ms = currentMilestone.value
     if (ms === null) return
@@ -59,10 +90,7 @@ export function ActiveMilestoneSetView() {
                         <div className="font-bold">{tempState.value?.name}</div>
                         <IconButton
                           disabled={isInactive}
-                          onclick={() =>
-                            tempState.value &&
-                            handleMilestoneCompleted(tempState.value)
-                          }
+                          onclick={() => handleMilestoneCompleted()}
                           className="bg-green-900 rounded px-2 py-1"
                         >
                           Complete{" "}
@@ -88,6 +116,7 @@ export function ActiveMilestoneSetView() {
                                   hours: 0,
                                   minutes: 0,
                                   seconds: 0,
+                                  raw: 0,
                                 }
                               }
                             />
@@ -100,6 +129,12 @@ export function ActiveMilestoneSetView() {
                   <pre className="p-2 bg-black/25 w-full rounded text-sm text-neutral-300">
                     <code>{tempState.value?.note || <i>No Notes</i>}</code>
                   </pre>
+                </Col>
+                <Col className="bg-white/5 p-2 rounded">
+                  <h2 className="font-mono font-bold">Stats</h2>
+                  <div className="p-2 bg-black/25 rounded">
+                    <LineChart data={graphData} />
+                  </div>
                 </Col>
               </Col>
             </Modal>
