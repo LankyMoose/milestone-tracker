@@ -14,6 +14,13 @@ import {
   selectedMilestoneSetId,
 } from "./state"
 
+const changeListeners: Set<() => void> = new Set()
+
+export const onShortcutChanged = (callback: () => void) => {
+  changeListeners.add(callback)
+  return () => changeListeners.delete(callback)
+}
+
 export const keybindModifiers = ["Alt", "Shift", "CommandOrControl"] as const
 
 export type KeybindModifier = (typeof keybindModifiers)[number]
@@ -73,6 +80,7 @@ function defineShortcut({
 
   const saveToStorage = () => {
     localStorage.setItem(storageKey, JSON.stringify(configuration))
+    changeListeners.forEach((cb) => cb())
   }
 
   return {

@@ -1,4 +1,5 @@
-import { Portal, Transition } from "kaioken"
+import { Portal, Transition, useEffect, useRequestUpdate } from "kaioken"
+import { className as cls } from "kaioken/utils"
 import { settingsOpen } from "../state"
 import { DialogHeader } from "./dialog/DialogHeader"
 import { Modal } from "./dialog/Modal"
@@ -6,10 +7,13 @@ import {
   KeybindModifier,
   keybindModifiers,
   keybindModifierText,
+  onShortcutChanged,
   shortcuts,
 } from "../shortcuts"
 
 export function Settings() {
+  const requestUpdate = useRequestUpdate()
+  useEffect(() => onShortcutChanged(requestUpdate), [])
   return (
     <Portal container={document.getElementById("portal-root")!}>
       <Transition
@@ -27,21 +31,21 @@ export function Settings() {
                         key={name}
                         className="p-2 flex justify-between gap-2 bg-white/5"
                       >
-                        <div className="flex gap-2">
-                          <span className="text-neutral-400 text-sm">
-                            {shortcut.name}
-                          </span>
-                          <input
-                            type={"checkbox"}
-                            checked={!shortcut.disabled}
-                            onchange={(e) =>
-                              (shortcut.disabled = !e.target.checked)
-                            }
-                          />
-                        </div>
+                        <span
+                          className={cls(
+                            "grow text-neutral-400 text-sm",
+                            shortcut.disabled && "opacity-50"
+                          )}
+                        >
+                          {shortcut.name}
+                        </span>
                         <div className="flex gap-2">
                           <select
-                            className="px-2 text-center bg-[#0f0f0f] text-sm rounded"
+                            className={cls(
+                              "px-2 text-center bg-[#0f0f0f] text-sm rounded",
+                              shortcut.disabled && "opacity-50"
+                            )}
+                            disabled={shortcut.disabled}
                             value={shortcut.modifier}
                             onchange={(e) =>
                               (shortcut.modifier = e.target
@@ -54,10 +58,21 @@ export function Settings() {
                               </option>
                             ))}
                           </select>
-                          <span className="text-sm">+</span>
+                          <span
+                            className={cls(
+                              "text-sm",
+                              shortcut.disabled && "opacity-50"
+                            )}
+                          >
+                            +
+                          </span>
                           <input
                             type="text"
-                            className="px-2 w-14 text-center bg-[#0f0f0f] text-sm rounded"
+                            className={cls(
+                              "px-2 w-14 text-center bg-[#0f0f0f] text-sm rounded",
+                              shortcut.disabled && "opacity-50"
+                            )}
+                            disabled={shortcut.disabled}
                             value={shortcut.character}
                             onfocus={(e) =>
                               (e.target as HTMLInputElement)?.select()
@@ -82,6 +97,13 @@ export function Settings() {
                             oninput={(e) => e.preventDefault()}
                           />
                         </div>
+                        <input
+                          type={"checkbox"}
+                          checked={!shortcut.disabled}
+                          onchange={(e) =>
+                            (shortcut.disabled = !e.target.checked)
+                          }
+                        />
                       </li>
                     ))}
                   </ul>
