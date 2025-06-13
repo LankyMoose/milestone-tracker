@@ -15,7 +15,6 @@ import {
 } from "../state"
 import { DialogHeader } from "./dialog/DialogHeader"
 import { DialogFooter } from "./dialog/DialogFooter"
-import { Drawer } from "./dialog/Drawer"
 import { useTextareaAutoSize } from "@kaioken-core/hooks"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
 import { Row, Col } from "./Containers"
@@ -23,6 +22,7 @@ import { IconButton } from "./IconButton"
 import { TrashIcon } from "./icons/TrashIcon"
 import { UndoIcon } from "./icons/UndoIcon"
 import { CreateIcon } from "./icons/CreateIcon"
+import { Modal } from "./dialog/Modal"
 
 export function MilestoneSetEditor() {
   const tempState = useSignal<MilestoneSet>({
@@ -102,7 +102,7 @@ export function MilestoneSetEditor() {
         }
         element={(state) => {
           return (
-            <Drawer
+            <Modal
               close={() => {
                 if (milestoneSetEditing.value === null) return
                 milestoneData.value = {
@@ -171,7 +171,7 @@ export function MilestoneSetEditor() {
                   </div>
                 </div>
               </DialogFooter>
-            </Drawer>
+            </Modal>
           )
         }}
       />
@@ -267,7 +267,7 @@ const NumberInput = (props: ElementProps<"input">) => {
   return (
     <input
       type="number"
-      className={"w-auto bg-black/30 pl-2 rounded"}
+      className={"w-10 bg-black/30 pl-2 rounded"}
       {...props}
     />
   )

@@ -14,9 +14,21 @@ import {
   selectedMilestoneSetId,
 } from "./state"
 
-export type KeybindModifier = "Alt" | "Shift" | "CommandOrControl"
+export const keybindModifiers = ["Alt", "Shift", "CommandOrControl"] as const
 
-type ShortcutInstance = {
+export type KeybindModifier = (typeof keybindModifiers)[number]
+
+export const keybindModifierText = (modifier: KeybindModifier) => {
+  switch (modifier) {
+    case "Alt":
+    case "Shift":
+      return modifier
+    case "CommandOrControl":
+      return "Cmd/Ctrl"
+  }
+}
+
+export type ShortcutInstance = {
   name: string
   modifier: KeybindModifier
   character: string

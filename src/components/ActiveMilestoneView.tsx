@@ -11,10 +11,12 @@ import {
   selectedMilestoneSetId,
 } from "../state"
 import { TimeDisplaySpan } from "./TimeDisplaySpan"
-import { Button } from "./atoms/Button"
 import { Modal } from "./dialog/Modal"
 import { Stopwatch } from "./Stopwatch"
 import { Col, Row } from "./Containers"
+import { ShortcutBadge } from "./ShortcutBadge"
+import { shortcuts } from "../shortcuts"
+import { IconButton } from "./IconButton"
 
 export function ActiveMilestoneSetView() {
   const tempState = useSignal<Milestone | null>(null)
@@ -60,15 +62,19 @@ export function ActiveMilestoneSetView() {
                     <Col grow>
                       <Row className="justify-between">
                         <div className="font-bold">{tempState.value?.name}</div>
-                        <Button
+                        <IconButton
                           disabled={isInactive}
                           onclick={() =>
                             tempState.value &&
                             handleMilestoneCompleted(tempState.value)
                           }
+                          className="bg-green-900 rounded px-2 py-1"
                         >
-                          Complete
-                        </Button>
+                          Complete{" "}
+                          <ShortcutBadge
+                            shortcut={shortcuts.completeMilestone}
+                          />
+                        </IconButton>
                       </Row>
                       <Col>
                         <Row className="justify-between">

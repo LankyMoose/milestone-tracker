@@ -2,7 +2,12 @@ import { Portal, Transition } from "kaioken"
 import { settingsOpen } from "../state"
 import { DialogHeader } from "./dialog/DialogHeader"
 import { Modal } from "./dialog/Modal"
-import { KeybindModifier, shortcuts } from "../shortcuts"
+import {
+  KeybindModifier,
+  keybindModifiers,
+  keybindModifierText,
+  shortcuts,
+} from "../shortcuts"
 
 export function Settings() {
   return (
@@ -43,9 +48,11 @@ export function Settings() {
                                 .value as KeybindModifier)
                             }
                           >
-                            <option value="Alt">Alt</option>
-                            <option value="Shift">Shift</option>
-                            <option value="CommandOrControl">Cmd/Ctrl</option>
+                            {keybindModifiers.map((modifier) => (
+                              <option key={modifier} value={modifier}>
+                                {keybindModifierText(modifier)}
+                              </option>
+                            ))}
                           </select>
                           <span className="text-sm">+</span>
                           <input
