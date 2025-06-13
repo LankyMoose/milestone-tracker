@@ -68,6 +68,7 @@ export function ActiveMilestoneSetView() {
                           Complete{" "}
                           <ShortcutBadge
                             shortcut={shortcuts.completeMilestone}
+                            replacer={null}
                           />
                         </IconButton>
                       </Row>

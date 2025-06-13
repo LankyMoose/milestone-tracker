@@ -2,11 +2,13 @@ import { ShortcutInstance, keybindModifierText } from "../shortcuts"
 
 export function ShortcutBadge({
   shortcut,
+  replacer = <span innerHTML="&nbsp;" />,
 }: {
   shortcut: ShortcutInstance | null
+  replacer?: JSX.Element
 }) {
   if (shortcut === null || shortcut.disabled) {
-    return <span innerHTML="&nbsp;" />
+    return replacer
   }
   return (
     <span
