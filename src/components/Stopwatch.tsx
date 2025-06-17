@@ -23,12 +23,16 @@ export function Stopwatch() {
         <Derive from={currentTime}>
           {(time) => {
             const { hours, minutes, seconds, hundredths } = formatTime(time)
+            const lgValues =
+              hours > 0
+                ? [hours, minutes, seconds]
+                : minutes > 0
+                ? [minutes, seconds]
+                : [seconds]
             return (
               <>
                 <span className="text-5xl">
-                  {hours > 0 ? `${hours}:` : ""}
-                  {minutes > 0 ? `${minutes}:` : ""}
-                  {String(seconds).padStart(minutes > 0 ? 2 : 1, "0")}
+                  {lgValues.map((v) => String(v).padStart(2, "0")).join(":")}
                 </span>
                 <span className="text-4xl">
                   .{String(hundredths).padStart(2, "0")}
@@ -62,6 +66,15 @@ export function Stopwatch() {
           <UndoIcon width="3rem" height="3rem" />
           <ShortcutBadge shortcut={null} />
         </IconButton>
+        {false && (
+          <button
+            onclick={() => {
+              currentTime.value = 59.9 * 60 * 1000
+            }}
+          >
+            skip to 59 min
+          </button>
+        )}
       </div>
     </div>
   )
